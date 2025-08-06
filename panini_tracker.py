@@ -196,9 +196,7 @@ def print_exchange_info(collection: Dict[int, int]) -> None:
     if not missing:
         print("Collection complete! No stickers needed.")
     else:
-        for i in range(0, len(missing), 10):
-            chunk = missing[i:i+10]
-            print(",".join(f"{n}" for n in chunk))
+        print(",".join(str(n) for n in missing))
 
     print(f"\nCollection progress: {len(collection)}/{TOTAL_STICKERS} ({(len(collection) / TOTAL_STICKERS) * 100:.1f}%)")
 
