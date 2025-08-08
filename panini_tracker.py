@@ -200,6 +200,33 @@ def print_exchange_info(collection: Dict[int, int]) -> None:
 
     print(f"\nCollection progress: {len(collection)}/{TOTAL_STICKERS} ({(len(collection) / TOTAL_STICKERS) * 100:.1f}%)")
 
+def print_exchange_info_better(collection: Dict[int, int]) -> None:
+    """Print both duplicates and missing stickers for exchange purposes in a better format."""
+    duplicates = {k: v for k, v in collection.items() if v > 1}
+    missing = [i for i in range(1, TOTAL_STICKERS + 1) if i not in collection]
+    
+    print("\n=== EXCHANGE INFO (BETTER FORMAT) ===")
+    print("\nDuplicates available for exchange:")
+    if not duplicates:
+        print("No duplicate stickers available.")
+    else:
+        dup_list = sorted(duplicates.keys())
+        for i in range(0, len(dup_list), 10):
+            chunk = dup_list[i:i+10]
+            formatted_numbers = [str(n).ljust(3) for n in chunk]
+            print(", ".join(formatted_numbers))
+    
+    print("\nStickers needed:")
+    if not missing:
+        print("Collection complete! No stickers needed.")
+    else:
+        for i in range(0, len(missing), 10):
+            chunk = missing[i:i+10]
+            formatted_numbers = [str(n).ljust(3) for n in chunk]
+            print(", ".join(formatted_numbers))
+
+    print(f"\nCollection progress: {len(collection)}/{TOTAL_STICKERS} ({(len(collection) / TOTAL_STICKERS) * 100:.1f}%)")
+
 def find_stickers(stickers_to_find: List[int], collection: Dict[int, int]) -> None:
     """Check if specific stickers exist in the collection."""
     for sticker in stickers_to_find:
@@ -258,6 +285,7 @@ def main():
                       help="Compare with local lists (format: 1,2,3 for both lists)")
     group.add_argument("-d", "--duplicates", action="store_true", help="Print duplicate stickers and their quantities")
     group.add_argument("-e", "--exchange", action="store_true", help="Print exchange info (duplicates and missing)")
+    group.add_argument("-eb", "--exchange-better", action="store_true", help="Print exchange info in better format (10 per row)")
     group.add_argument("-f", "--find", help="Check if stickers exist in collection (comma-separated list)")
     group.add_argument("-r", "--remove", help="Remove stickers from collection (comma-separated list)")
     
@@ -316,6 +344,9 @@ def main():
     elif args.exchange:
         print_exchange_info(collection)
     
+    elif args.exchange_better:
+        print_exchange_info_better(collection)
+        
     elif args.find:
         try:
             stickers_to_find = [int(s.strip()) for s in args.find.split(",")]
